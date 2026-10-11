@@ -1,11 +1,11 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Joseph Mills</title>
-  </head>
-  <body>
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ThemeToggle from '../components/ThemeToggle.astro';
+---
+
+<BaseLayout title="Joseph Mills" description="Joseph Mills — software engineer and AI/ML developer in Calgary.">
+  <header class="container"><ThemeToggle /></header>
+  <main class="container">
     <h1>Joseph Mills</h1>
-  </body>
-</html>
+  </main>
+</BaseLayout>
