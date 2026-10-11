@@ -1,0 +1,18 @@
+---
+import { getCollection } from 'astro:content';
+import SectionHeader from './SectionHeader.astro';
+import ProjectCard from './ProjectCard.astro';
+
+const entries = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
+---
+
+<section id="projects" class="section container" aria-labelledby="projects-title">
+  <SectionHeader id="projects" label="Projects" title="Selected work" />
+  <div class="projects">
+    {entries.map((entry, i) => <ProjectCard entry={entry} eager={i === 0} />)}
+  </div>
+</section>
+
+<style>
+  .projects { display: grid; gap: 32px; }
+</style>

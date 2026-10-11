@@ -41,7 +41,8 @@ test('works when localStorage throws', async ({ browser }) => {
   const page = await context.newPage();
   const errors: string[] = [];
   page.on('pageerror', (e) => errors.push(e.message));
-  page.on('console', (m) => m.type() === 'error' && errors.push(m.text()));
+  // Fixture projects reference media that is only stubbed in projects.spec.ts; ignore resource-load noise.
+  page.on('console', (m) => m.type() === 'error' && !m.text().startsWith('Failed to load resource') && errors.push(m.text()));
   await page.addInitScript(() => {
     Object.defineProperty(window, 'localStorage', {
       get() {

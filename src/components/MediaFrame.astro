@@ -1,0 +1,135 @@
+---
+import { Image } from 'astro:assets';
+import type { MediaItem } from '../content/schema';
+
+interface Props {
+  item?: MediaItem;
+  title: string;
+  index: number;
+  projectId: string;
+  eager?: boolean;
+  count?: number;
+}
+const { item, title, index, projectId, eager = false, count = 0 } = Astro.props;
+---
+
+{
+  item ? (
+    <button
+      type="button"
+      class="media-frame"
+      data-gallery={projectId}
+      data-index={index}
+      aria-label={`Open gallery: ${item.alt}`}
+    >
+      {item.type === 'image' && (
+        <Image
+          src={item.src}
+          alt={item.alt}
+          width={1200}
+          widths={[600, 900, 1200]}
+          sizes="(min-width: 1000px) 560px, calc(100vw - 48px)"
+          format="webp"
+          loading={eager ? 'eager' : 'lazy'}
+          fetchpriority={eager ? 'high' : 'auto'}
+        />
+      )}
+      {item.type === 'clip' && (
+        <video
+          data-clip
+          src={item.src}
+          poster={item.poster}
+          muted
+          loop
+          playsinline
+          preload="metadata"
+          width="1280"
+          height="720"
+          aria-label={item.alt}
+        />
+      )}
+      {item.type === 'youtube' && (
+        <>
+          <img
+            src={`https://i.ytimg.com/vi/${item.id}/hqdefault.jpg`}
+            alt={item.alt}
+            width="480"
+            height="360"
+            loading={eager ? 'eager' : 'lazy'}
+          />
+          <span class="media-frame__play" aria-hidden="true">▶</span>
+        </>
+      )}
+      {count > 1 && <span class="media-frame__count" aria-hidden="true">1 / {count}</span>}
+    </button>
+  ) : (
+    <div class="media-frame media-frame--empty">
+      <span aria-hidden="true">{title}</span>
+    </div>
+  )
+}
+
+<style>
+  .media-frame {
+    position: relative;
+    display: block;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
+    aspect-ratio: 16 / 9;
+    background: var(--bg-raised);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    cursor: zoom-in;
+  }
+  .media-frame :global(img),
+  .media-frame video {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .media-frame--empty {
+    display: grid;
+    place-items: center;
+    padding: 24px;
+    cursor: default;
+    text-align: center;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--heading);
+    background-color: var(--bg);
+    background-image:
+      linear-gradient(var(--grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size: 32px 32px;
+  }
+  .media-frame__play {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    font-size: 2.5rem;
+    color: #fff;
+    text-shadow: 0 2px 12px rgba(0, 0, 0, 0.6);
+    background: rgba(0, 0, 0, 0.25);
+  }
+  .media-frame__count {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.75rem;
+    color: #fff;
+    background: rgba(0, 0, 0, 0.6);
+  }
+</style>
+
+<script>
+  import { initClips } from '../scripts/clips';
+  initClips();
+</script>
