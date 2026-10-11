@@ -1,0 +1,24 @@
+---
+import { site } from '../data/site';
+import SectionHeader from './SectionHeader.astro';
+---
+
+<section id="skills" class="section container" aria-labelledby="skills-title">
+  <SectionHeader id="skills" label="Skills" title="The toolkit I build with" />
+  <div class="skills">
+    {site.skills.map((g) => (
+      <div class="card">
+        <h3>{g.group}</h3>
+        <ul class="chips">
+          {g.items.map((i) => <li class="chip">{i}</li>)}
+        </ul>
+      </div>
+    ))}
+  </div>
+</section>
+
+<style>
+  .skills { display: grid; gap: 20px; grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr)); }
+  h3 { font-size: 1.125rem; margin-bottom: 16px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; list-style: none; margin: 0; padding: 0; }
+</style>

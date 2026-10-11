@@ -1,0 +1,41 @@
+:root {
+  color-scheme: light;
+  --bg: #f4f3ee;
+  --bg-raised: #ffffff;
+  --grid: rgba(20, 30, 40, 0.05);
+  --text: #39434f;
+  --heading: #1a2230;
+  --muted: #666f7b;
+  --border: #e2e0d8;
+  --accent: #0f766e;
+  --accent-soft: #e3f1ee;
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #111417;
+  --bg-raised: #181c20;
+  --grid: rgba(255, 255, 255, 0.04);
+  --text: #c9d1d9;
+  --heading: #f0f3f6;
+  --muted: #8b949e;
+  --border: #2a3036;
+  --accent: #2dd4bf;
+  --accent-soft: #12302c;
+}
+
+/* No-JS visitors (and anyone before the toggle is used) follow the system theme. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg: #111417;
+    --bg-raised: #181c20;
+    --grid: rgba(255, 255, 255, 0.04);
+    --text: #c9d1d9;
+    --heading: #f0f3f6;
+    --muted: #8b949e;
+    --border: #2a3036;
+    --accent: #2dd4bf;
+    --accent-soft: #12302c;
+  }
+}

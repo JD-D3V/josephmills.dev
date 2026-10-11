@@ -1,0 +1,42 @@
+---
+import { site } from '../data/site';
+import placeholder from '../assets/portrait-placeholder.svg';
+
+const portrait = site.portrait ?? placeholder;
+const alt = site.portrait ? `Portrait of ${site.name}` : 'Portrait placeholder';
+---
+
+<header class="hero container" id="top">
+  <figure class="hero__portrait">
+    <img src={portrait.src} width={portrait.width} height={portrait.height} alt={alt} fetchpriority="high" />
+    <figcaption class="pill">{site.location}</figcaption>
+  </figure>
+  <div class="hero__copy">
+    <p class="pill hero__status"><span class="dot" aria-hidden="true"></span>{site.status}</p>
+    <h1>{site.name}</h1>
+    <p class="hero__tagline">{site.tagline}</p>
+    <p class="hero__summary">{site.summary}</p>
+    <div class="hero__actions">
+      <a class="btn btn--primary" href="#projects">View projects <span aria-hidden="true">↓</span></a>
+      {site.resume && <a class="btn btn--ghost" href={site.resume}>Download résumé</a>}
+    </div>
+  </div>
+</header>
+
+<style>
+  .hero { display: grid; gap: 32px; padding-top: 48px; padding-bottom: 72px; align-items: center; }
+  .hero__portrait { position: relative; margin: 0; max-width: 320px; width: 100%; }
+  .hero__portrait img { display: block; width: 100%; height: auto; aspect-ratio: 4 / 5; object-fit: cover; border: 1px solid var(--border); border-radius: 20px; }
+  .hero__portrait figcaption { position: absolute; left: 12px; bottom: 12px; background: var(--bg-raised); }
+  .hero__status { margin: 0 0 20px; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); flex: none; }
+  h1 { margin-bottom: 12px; }
+  .hero__tagline { margin: 0 0 20px; font-family: 'IBM Plex Mono', monospace; color: var(--accent); font-size: 1rem; }
+  .hero__summary { max-width: 560px; font-size: 1.1875rem; margin-bottom: 28px; }
+  .hero__actions { display: flex; flex-wrap: wrap; gap: 12px; }
+  @media (min-width: 900px) {
+    .hero { grid-template-columns: 1.4fr 1fr; gap: 64px; padding-top: 80px; padding-bottom: 96px; }
+    .hero__copy { order: 1; }
+    .hero__portrait { order: 2; justify-self: end; max-width: 380px; }
+  }
+</style>

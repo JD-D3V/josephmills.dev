@@ -1,0 +1,20 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ThemeToggle from '../components/ThemeToggle.astro';
+---
+
+<BaseLayout title="Page not found | Joseph Mills" description="This page does not exist." noindex>
+  <main class="container notfound">
+    <div class="notfound__toggle"><ThemeToggle /></div>
+    <p class="label">404</p>
+    <h1>Page not found</h1>
+    <p>That page doesn't exist, or it moved.</p>
+    <p><a class="btn btn--primary" href="/">Back to josephmills.dev</a></p>
+  </main>
+</BaseLayout>
+
+<style>
+  .notfound { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; padding-top: 48px; padding-bottom: 48px; }
+  .notfound__toggle { position: absolute; top: 16px; right: 16px; }
+  h1 { font-size: clamp(2.25rem, 8vw, 3.5rem); }
+</style>

@@ -1,0 +1,52 @@
+---
+import { render, type CollectionEntry } from 'astro:content';
+import MediaFrame from './MediaFrame.astro';
+
+interface Props {
+  entry: CollectionEntry<'projects'>;
+  eager?: boolean;
+}
+const { entry, eager = false } = Astro.props;
+const { title, category, tech, stats, links, media } = entry.data;
+const { Content } = await render(entry);
+---
+
+<article class="project" id={entry.id}>
+  <div class="project__media">
+    <MediaFrame item={media[0]} title={title} index={0} projectId={entry.id} eager={eager} count={media.length} />
+  </div>
+  <div class="project__body">
+    <p class="label">{category}</p>
+    <h3>{title}</h3>
+    <p class="project__tech">{tech}</p>
+    {stats.length > 0 && (
+      <ul class="project__stats">
+        {stats.map((s) => <li class="stat">{s}</li>)}
+      </ul>
+    )}
+    <div class="project__desc"><Content /></div>
+    {links.length > 0 && (
+      <div class="project__links">
+        {links.map((l, i) => (
+          <a class={`btn ${i === 0 ? 'btn--primary' : 'btn--ghost'}`} href={l.href} target="_blank" rel="noopener">{l.label}</a>
+        ))}
+      </div>
+    )}
+  </div>
+</article>
+
+<style>
+  .project { display: grid; gap: 24px; padding: 20px; background: var(--bg-raised); border: 1px solid var(--border); border-radius: 20px; min-width: 0; }
+  .project__media, .project__body { min-width: 0; }
+  .label { margin: 0 0 12px; }
+  h3 { font-size: clamp(1.375rem, 4vw, 1.75rem); }
+  .project__tech { margin: 0 0 16px; font-family: 'IBM Plex Mono', monospace; font-size: 0.875rem; color: var(--muted); }
+  .project__stats { display: flex; flex-wrap: wrap; gap: 8px; list-style: none; margin: 0 0 20px; padding: 0; }
+  .stat { overflow-wrap: anywhere; }
+  .project__desc :global(p:last-child) { margin-bottom: 0; }
+  .project__links { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 20px; }
+  @media (min-width: 1000px) {
+    .project { grid-template-columns: 1.1fr 1fr; gap: 40px; padding: 28px; align-items: center; }
+    :global(.projects > .project:nth-child(even)) .project__media { order: 2; }
+  }
+</style>

@@ -1,0 +1,14 @@
+---
+import { site } from '../data/site';
+---
+
+<footer class="footer container">
+  <p>© {new Date().getFullYear()} {site.name}</p>
+  <p><a href="https://github.com/JD-D3V/josephmills.dev" target="_blank" rel="noopener">Built with Astro</a></p>
+</footer>
+
+<style>
+  .footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 24px; padding-top: 32px; padding-bottom: 48px; border-top: 1px solid var(--border); font-family: 'IBM Plex Mono', monospace; font-size: 0.8125rem; color: var(--muted); }
+  p { margin: 0; }
+  a { color: var(--muted); }
+</style>
