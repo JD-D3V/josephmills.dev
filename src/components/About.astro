@@ -1,0 +1,37 @@
+---
+import { site } from '../data/site';
+import SectionHeader from './SectionHeader.astro';
+---
+
+<section id="about" class="section container" aria-labelledby="about-title">
+  <SectionHeader id="about" label="About" title="Who I am" />
+  <div class="about">
+    <div class="about__text">
+      {site.about.map((p) => <p>{p}</p>)}
+    </div>
+    <aside class="card glance" aria-labelledby="glance-title">
+      <h3 id="glance-title" class="label">At a glance</h3>
+      <dl>
+        {site.glance.map((g) => (
+          <>
+            <dt>{g.label}</dt>
+            <dd>{g.href ? <a href={g.href} target="_blank" rel="noopener">{g.value}</a> : g.value}</dd>
+          </>
+        ))}
+      </dl>
+    </aside>
+  </div>
+</section>
+
+<style>
+  .about { display: grid; gap: 32px; }
+  .about__text { max-width: 680px; }
+  .glance h3 { font-size: 0.8125rem; margin-bottom: 16px; }
+  dl { margin: 0; display: grid; gap: 4px; }
+  dt { font-family: 'IBM Plex Mono', monospace; font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-top: 12px; }
+  dt:first-child { margin-top: 0; }
+  dd { margin: 0; color: var(--heading); }
+  @media (min-width: 900px) {
+    .about { grid-template-columns: 2fr 1fr; gap: 48px; align-items: start; }
+  }
+</style>

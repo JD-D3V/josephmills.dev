@@ -1,11 +1,26 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import ThemeToggle from '../components/ThemeToggle.astro';
+import Nav from '../components/Nav.astro';
+import Hero from '../components/Hero.astro';
+import About from '../components/About.astro';
+import Skills from '../components/Skills.astro';
+import Beyond from '../components/Beyond.astro';
+import Contact from '../components/Contact.astro';
+import Footer from '../components/Footer.astro';
+import SectionHeader from '../components/SectionHeader.astro';
 ---
 
-<BaseLayout title="Joseph Mills" description="Joseph Mills — software engineer and AI/ML developer in Calgary.">
-  <header class="container"><ThemeToggle /></header>
-  <main class="container">
-    <h1>Joseph Mills</h1>
+<BaseLayout title="Joseph Mills" description="Joseph Mills — software engineer and AI/ML developer in Calgary, open to Winter 2027 co-ops.">
+  <Nav />
+  <main>
+    <Hero />
+    <About />
+    <Skills />
+    <section id="projects" class="section container" aria-labelledby="projects-title">
+      <SectionHeader id="projects" label="Projects" title="Selected work" />
+    </section>
+    <Beyond />
+    <Contact />
   </main>
+  <Footer />
 </BaseLayout>

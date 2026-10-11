@@ -1,0 +1,22 @@
+---
+import { site } from '../data/site';
+import SectionHeader from './SectionHeader.astro';
+---
+
+<section id="beyond" class="section container" aria-labelledby="beyond-title">
+  <SectionHeader id="beyond" label="Beyond" title="Away from the keyboard" />
+  <div class="beyond">
+    {site.beyond.map((b) => (
+      <div class="card">
+        <h3>{b.title}</h3>
+        <p>{b.text}</p>
+      </div>
+    ))}
+  </div>
+</section>
+
+<style>
+  .beyond { display: grid; gap: 20px; grid-template-columns: repeat(auto-fill, minmax(min(280px, 100%), 1fr)); }
+  h3 { font-size: 1.125rem; }
+  p { margin: 0; }
+</style>

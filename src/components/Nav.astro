@@ -1,0 +1,57 @@
+---
+import { site } from '../data/site';
+import ThemeToggle from './ThemeToggle.astro';
+
+const links = [
+  { href: '#about', label: 'About' },
+  { href: '#skills', label: 'Skills' },
+  { href: '#projects', label: 'Projects' },
+  { href: '#beyond', label: 'Beyond' },
+  { href: '#contact', label: 'Contact' },
+];
+---
+
+<nav class="nav" aria-label="Primary">
+  <div class="container nav__inner">
+    <a class="nav__brand" href="/" aria-label={`${site.name}, home`}>
+      <span class="nav__badge" aria-hidden="true">{site.initials}</span>
+      <span class="nav__name">{site.name}</span>
+    </a>
+    <ul class="nav__links">
+      {links.map((l) => (
+        <li><a href={l.href}>{l.label}</a></li>
+      ))}
+      {site.resume && <li><a href={site.resume}>Résumé</a></li>}
+    </ul>
+    <div class="nav__toggle"><ThemeToggle /></div>
+  </div>
+</nav>
+
+<style>
+  .nav {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: color-mix(in srgb, var(--bg) 88%, transparent);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav__inner { display: flex; align-items: center; gap: 24px; min-height: 64px; flex-wrap: wrap; }
+  .nav__brand { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; color: var(--heading); font-family: 'Space Grotesk', sans-serif; font-weight: 600; }
+  .nav__badge { display: inline-grid; place-items: center; width: 32px; height: 32px; border: 1.5px solid var(--accent); border-radius: 8px; color: var(--accent); font-family: 'IBM Plex Mono', monospace; font-size: 0.8125rem; font-weight: 600; }
+  .nav__links { display: flex; gap: 4px; list-style: none; margin: 0 0 0 auto; padding: 0; }
+  .nav__links a { display: block; padding: 8px 12px; border-radius: 8px; color: var(--text); text-decoration: none; font-family: 'IBM Plex Mono', monospace; font-size: 0.875rem; white-space: nowrap; }
+  .nav__links a:hover { color: var(--heading); background: var(--accent-soft); }
+  .nav__links a[aria-current='true'] { color: var(--accent); background: var(--accent-soft); }
+  .nav__toggle { display: flex; }
+  @media (max-width: 719px) {
+    .nav__inner { gap: 8px 12px; padding-top: 8px; padding-bottom: 8px; }
+    .nav__toggle { margin-left: auto; }
+    .nav__links { order: 3; width: 100%; margin: 0; overflow-x: auto; scrollbar-width: none; }
+  }
+</style>
+
+<script>
+  import { initNavHighlight } from '../scripts/nav';
+  initNavHighlight();
+</script>
