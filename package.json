@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "description": "Personal portfolio site for Joseph Mills \u2014 josephmills.dev",
+  "description": "Personal portfolio site for Joseph Mills — josephmills.dev",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/JD-D3V/josephmills.dev.git"
@@ -19,7 +19,10 @@
     "check": "astro check",
     "test:unit": "vitest run",
     "test:e2e": "playwright test",
-    "test": "npm run test:unit && npm run test:e2e"
+    "test": "npm run test:unit && npm run test:e2e",
+    "test:links": "linkinator dist --recurse --check-fragments --skip \"linkedin\\\\.com|^https://josephmills\\\\.dev\"",
+    "test:lighthouse": "node scripts/lighthouse.mjs",
+    "verify": "npm run check && npm test && npm run build && npm run test:links && npm run test:lighthouse"
   },
   "dependencies": {
     "@astrojs/sitemap": "3.7.4",
