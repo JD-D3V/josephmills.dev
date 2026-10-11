@@ -28,16 +28,45 @@ const json = JSON.stringify(items).replace(/</g, '\\u003c');
   .gallery { padding: 0; border: 1px solid var(--border); border-radius: 16px; background: var(--bg-raised); color: var(--text); width: min(1100px, 96vw); max-width: 96vw; max-height: 94vh; overflow: hidden; }
   .gallery[open] { display: flex; flex-direction: column; }
   .gallery::backdrop { background: rgba(0, 0, 0, 0.75); }
+
+  /* Open/close: fade + slight rise; display and overlay are transitioned so the exit is visible too. */
+  @media (prefers-reduced-motion: no-preference) {
+    .gallery {
+      opacity: 0;
+      transform: translateY(14px) scale(0.98);
+      transition: opacity 0.22s ease, transform 0.22s ease, display 0.22s allow-discrete, overlay 0.22s allow-discrete;
+    }
+    .gallery[open] { opacity: 1; transform: none; }
+    .gallery::backdrop {
+      background: rgba(0, 0, 0, 0);
+      transition: background 0.22s ease, display 0.22s allow-discrete, overlay 0.22s allow-discrete;
+    }
+    .gallery[open]::backdrop { background: rgba(0, 0, 0, 0.75); }
+    @starting-style {
+      .gallery[open] { opacity: 0; transform: translateY(14px) scale(0.98); }
+      .gallery[open]::backdrop { background: rgba(0, 0, 0, 0); }
+    }
+  }
+
   .gallery__bar { display: flex; justify-content: space-between; align-items: center; padding: 8px 8px 8px 16px; font-family: 'IBM Plex Mono', monospace; font-size: 0.875rem; }
   .gallery__main { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 4px; min-height: 0; }
-  .gallery__stage { display: grid; place-items: center; min-width: 0; min-height: 200px; }
-  .gallery__stage img, .gallery__stage video { max-width: 100%; max-height: 70vh; object-fit: contain; border-radius: 8px; }
-  .gallery__stage iframe { width: 100%; aspect-ratio: 16 / 9; max-height: 70vh; border: 0; border-radius: 8px; }
-  .gallery__yt { position: relative; display: block; padding: 0; border: 0; background: none; cursor: pointer; max-width: 100%; }
-  .gallery__yt img { display: block; }
+
+  /* Fixed-size stage: slides are layered on top of each other so switching never shifts the layout. */
+  .gallery__stage { position: relative; width: min(100%, calc(70vh * 16 / 9)); aspect-ratio: 16 / 9; margin: 0 auto; min-width: 0; }
+  .gallery__slide { position: absolute; inset: 0; display: grid; place-items: center; opacity: 0; transform: translateX(var(--dx, 0)); pointer-events: none; }
+  .gallery__slide.is-active { opacity: 1; transform: none; pointer-events: auto; }
+  @media (prefers-reduced-motion: no-preference) {
+    .gallery__slide { transition: opacity 0.22s ease, transform 0.22s ease; }
+  }
+  .gallery__slide img, .gallery__slide video { max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; border-radius: 8px; }
+  .gallery__slide video { width: 100%; height: 100%; }
+  .gallery__slide iframe { width: 100%; height: 100%; border: 0; border-radius: 8px; }
+  .gallery__yt { position: relative; display: grid; place-items: center; width: 100%; height: 100%; padding: 0; border: 0; background: none; cursor: pointer; }
+  .gallery__yt img { max-width: 100%; max-height: 100%; }
   .gallery__yt-glyph { position: absolute; inset: 0; display: grid; place-items: center; font-size: 3rem; color: #fff; background: rgba(0, 0, 0, 0.3); border-radius: 8px; }
-  .gallery__caption { margin: 0; padding: 12px 16px 16px; text-align: center; color: var(--muted); font-size: 0.9375rem; }
-  .gallery__nav, .gallery__close { width: 44px; height: 44px; display: grid; place-items: center; font-size: 1.5rem; line-height: 1; color: var(--heading); background: transparent; border: 1px solid var(--border); border-radius: 10px; cursor: pointer; }
+  .gallery__caption { margin: 0; padding: 12px 16px 16px; text-align: center; color: var(--muted); font-size: 0.9375rem; min-height: 3.2em; }
+  .gallery__nav, .gallery__close { width: 44px; height: 44px; display: grid; place-items: center; font-size: 1.5rem; line-height: 1; color: var(--heading); background: transparent; border: 1px solid var(--border); border-radius: 10px; cursor: pointer; transition: background-color 0.15s ease; }
+  .gallery__nav:hover, .gallery__close:hover { background: var(--accent-soft); }
   .gallery__nav[hidden] { display: none; }
   @media (max-width: 599px) {
     .gallery__nav { width: 36px; height: 36px; }
