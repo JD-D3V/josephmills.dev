@@ -196,3 +196,7 @@ video {
   padding-top: 72px;
   padding-bottom: 72px;
 }
+
+body:has(dialog[open]) {
+  overflow: hidden;
+}

@@ -2,8 +2,31 @@
 import { getCollection } from 'astro:content';
 import SectionHeader from './SectionHeader.astro';
 import ProjectCard from './ProjectCard.astro';
+import Gallery from './Gallery.astro';
+import { getImage } from 'astro:assets';
+import type { GalleryItem } from '../scripts/gallery';
 
 const entries = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
+
+// The lightbox is driven by JSON, so images are resolved to optimised URLs here (getImage)
+// rather than serialising raw ImageMetadata.
+const galleries = await Promise.all(
+  entries
+    .filter((e) => e.data.media.length > 0)
+    .map(async (e) => {
+      const items: GalleryItem[] = await Promise.all(
+        e.data.media.map(async (m): Promise<GalleryItem> => {
+          if (m.type === 'image') {
+            const img = await getImage({ src: m.src, format: 'webp', width: 1600 });
+            return { type: 'image', src: img.src, alt: m.alt };
+          }
+          if (m.type === 'clip') return { type: 'clip', src: m.src, poster: m.poster, alt: m.alt };
+          return { type: 'youtube', id: m.id, alt: m.alt };
+        }),
+      );
+      return { id: e.id, title: e.data.title, items };
+    }),
+);
 ---
 
 <section id="projects" class="section container" aria-labelledby="projects-title">
@@ -11,6 +34,7 @@ const entries = (await getCollection('projects')).sort((a, b) => a.data.order - 
   <div class="projects">
     {entries.map((entry, i) => <ProjectCard entry={entry} eager={i === 0} />)}
   </div>
+  {galleries.map((g) => <Gallery projectId={g.id} title={g.title} items={g.items} />)}
 </section>
 
 <style>
