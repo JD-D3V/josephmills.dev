@@ -3,3 +3,7 @@ node_modules/
 dist/
 .vercel/
 .superpowers/
+.astro/
+.wrangler/
+test-results/
+playwright-report/
