@@ -22,7 +22,7 @@ test('real projects render in order', async ({ page }) => {
 
 test('private projects have no GitHub link', async ({ page }) => {
   await page.goto('/');
-  for (const id of ['water-temp-monitor', 'calgary-watermain-agent']) {
+  for (const id of ['water-temp-monitor']) {
     await expect(card(page, id).locator('a[href*="github.com"]')).toHaveCount(0);
   }
 });

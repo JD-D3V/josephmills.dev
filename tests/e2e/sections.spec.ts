@@ -32,9 +32,16 @@ test('no horizontal scroll', async ({ page }) => {
   expect(overflow).toBeLessThanOrEqual(0);
 });
 
-test('portrait placeholder when no photo', async ({ page }) => {
+test('hero shows the real portrait, optimised', async ({ page }) => {
   await page.goto('/');
-  await expect(page.locator('.hero figure img[alt="Portrait placeholder"]')).toBeVisible();
+  const img = page.locator('.hero figure img');
+  await expect(img).toHaveAttribute('alt', 'Portrait of Joseph Mills');
+  await expect(img).toHaveAttribute('src', /\.webp$/);
+  await expect(img).toHaveAttribute('width', /\d+/);
+  await expect(img).toHaveAttribute('height', /\d+/);
+  await expect(img).toBeVisible();
+  // loaded and decoded (naturalWidth is density-adjusted for srcset, so only check it is non-zero)
+  expect(await img.evaluate((el: HTMLImageElement) => el.complete && el.naturalWidth > 0)).toBe(true);
 });
 
 test('resume PDF is served', async ({ request }) => {
