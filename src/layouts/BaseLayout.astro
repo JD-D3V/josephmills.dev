@@ -45,6 +45,7 @@ const ogUrl = new URL(ogImage, Astro.site).href;
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogUrl} />
+    <slot name="head" />
     <script is:inline>
       (function () {
         var stored = null;
@@ -58,6 +59,7 @@ const ogUrl = new URL(ogImage, Astro.site).href;
     </script>
   </head>
   <body>
+    <a class="skip-link" href="#main">Skip to content</a>
     <slot />
   </body>
 </html>
