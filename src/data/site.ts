@@ -3,6 +3,9 @@
 import type { ImageMetadata } from 'astro';
 import portraitImage from '../assets/portrait.jpg';
 import spruceMeadowsPhoto from '../assets/experience/spruce-meadows.jpg';
+import wooferShot from '../assets/more-projects/woofer.jpg';
+import classroomShot from '../assets/more-projects/classroom.jpg';
+import musicShot from '../assets/more-projects/music.jpg';
 
 export interface Link {
   label: string;
@@ -29,7 +32,7 @@ export interface SiteConfig {
     photo?: { image: ImageMetadata; alt: string; credit?: string };
   }[];
   skills: { group: string; items: string[] }[];
-  moreProjects: { title: string; year: string; tech: string; text: string; href?: string }[];
+  moreProjects: { title: string; year: string; tech: string; text: string; href?: string; image?: { src: ImageMetadata; alt: string } }[];
   beyond: { title: string; text: string }[];
   contact: {
     blurb: string;
@@ -120,6 +123,7 @@ export const site: SiteConfig = {
       tech: 'JavaScript · TypeScript · Go · Next.js · Postgres',
       text: 'A dog adoption app on Next.js, live on Vercel, where adopters browse dogs and shelters review applicants. The Go REST API on Postgres covers listings, matches and messaging, with login required on every endpoint.',
       href: 'https://woofer-web-ashen.vercel.app',
+      image: { src: wooferShot, alt: 'Woofer home page: swipe right on your new best friend, with a cartoon golden retriever' },
     },
     {
       title: 'Classroom Finder',
@@ -127,6 +131,7 @@ export const site: SiteConfig = {
       tech: 'React · TypeScript · Python · Playwright',
       text: 'A React/TypeScript web app and Telegram bot that read the university timetable to show which classrooms are free, backed by a Python REST API.',
       href: 'https://jd-d3v.github.io/Class-Finder',
+      image: { src: classroomShot, alt: 'Classroom Finder (MRU Finder) listing which rooms are free now' },
     },
     {
       title: 'Music Browser',
@@ -134,6 +139,7 @@ export const site: SiteConfig = {
       tech: 'JavaScript · React · Node.js · Express · SQLite',
       text: 'A music catalogue app with filtering and sorting, charts comparing 6 audio measurements per song, and a feature that finds the 3 most similar tracks.',
       href: 'https://jd-d3v.github.io/COMP4513Assign2',
+      image: { src: musicShot, alt: 'Music Browser home page with a wall of artist photos and the headline Discover Music' },
     },
     {
       title: 'Multi-Threaded Web Server',

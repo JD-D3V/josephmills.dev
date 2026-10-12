@@ -84,14 +84,17 @@ test('closing stops video and removes the YouTube iframe', async ({ page }) => {
   await opener(page, 'zz-fixture-all-media').click();
   await page.keyboard.press('ArrowRight');
   await expect(counter(page)).toHaveText('2 / 3');
-  const playsBefore = await page.evaluate(() => (window as unknown as { __plays: number }).__plays);
-  expect(playsBefore).toBeGreaterThan(0);
+  // wait until the clip has really started, so closing has something to stop
+  await expect.poll(() => page.evaluate(() => (window as unknown as { __plays: number }).__plays)).toBeGreaterThan(0);
   const pausesBefore = await page.evaluate(() => (window as unknown as { __pauses: number }).__pauses);
   await page.keyboard.press('Escape');
   await expect(page.locator('dialog[open]')).toHaveCount(0);
-  const dialogVideo = page.locator('dialog[data-gallery-dialog="zz-fixture-all-media"] video');
-  expect(await dialogVideo.evaluate((v: HTMLVideoElement) => v.paused)).toBe(true);
+  const allPaused = await page.evaluate(() => [...document.querySelectorAll('video')].filter((v) => v.closest('dialog')).every((v) => v.paused));
+  expect(allPaused).toBe(true);
   expect(await page.evaluate(() => (window as unknown as { __pauses: number }).__pauses)).toBeGreaterThan(pausesBefore);
+  const playsAfterClose = await page.evaluate(() => (window as unknown as { __plays: number }).__plays);
+  await page.waitForTimeout(300);
+  expect(await page.evaluate(() => (window as unknown as { __plays: number }).__plays)).toBe(playsAfterClose); // nothing restarts it
 
   await opener(page, 'zz-fixture-all-media').click();
   await page.keyboard.press('ArrowLeft');

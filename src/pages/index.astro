@@ -8,12 +8,26 @@ import Skills from '../components/Skills.astro';
 import Beyond from '../components/Beyond.astro';
 import Contact from '../components/Contact.astro';
 import Footer from '../components/Footer.astro';
+import { site } from '../data/site';
 import Projects from '../components/Projects.astro';
+
+const social = site.contact.links.filter((l) => l.kind === 'github' || l.kind === 'linkedin').map((l) => l.href);
+const ld = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: site.name,
+  url: 'https://josephmills.dev',
+  description: 'Computer science student and machine learning research assistant in Calgary.',
+  address: { '@type': 'PostalAddress', addressLocality: 'Calgary', addressRegion: 'AB', addressCountry: 'CA' },
+  alumniOf: { '@type': 'CollegeOrUniversity', name: 'Mount Royal University' },
+  sameAs: social,
+}).replace(/</g, '\\u003c');
 ---
 
-<BaseLayout title="Joseph Mills" description="Joseph Mills — software engineer and AI/ML developer in Calgary, open to Winter 2027 co-ops.">
+<BaseLayout title="Joseph Mills | Software Engineer and AI/ML" description="Joseph Mills: computer science student and ML research assistant in Calgary, open to Winter 2027 software engineering co-ops.">
+  <script slot="head" type="application/ld+json" set:html={ld} />
   <Nav />
-  <main>
+  <main id="main" tabindex="-1">
     <Hero />
     <About />
     <Experience />

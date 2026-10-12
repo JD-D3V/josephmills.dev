@@ -1,5 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
 import { site } from '../data/site';
 import SectionHeader from './SectionHeader.astro';
 import ProjectCard from './ProjectCard.astro';
@@ -40,6 +41,9 @@ const galleries = await Promise.all(
     <div class="more__grid">
       {site.moreProjects.map((p) => (
         <article class="card more__card">
+          {p.image && (
+            <Image class="more__thumb" src={p.image.src} alt={p.image.alt} width={640} widths={[400, 640]} sizes="(min-width: 700px) 340px, calc(100vw - 80px)" format="webp" loading="lazy" />
+          )}
           <div class="more__head">
             <h4>{p.title}</h4>
             <p class="more__year">{p.year}</p>
@@ -59,6 +63,7 @@ const galleries = await Promise.all(
   .more { margin-top: 56px; }
   .more__title { font-size: 1.25rem; margin-bottom: 20px; }
   .more__grid { display: grid; gap: 20px; grid-template-columns: repeat(auto-fill, minmax(min(320px, 100%), 1fr)); }
+  .more__thumb { display: block; width: 100%; aspect-ratio: 16 / 9; object-fit: cover; object-position: top; border-radius: 10px; border: 1px solid var(--border); margin-bottom: 16px; }
   .more__head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
   .more__card h4 { font-family: 'Space Grotesk', sans-serif; font-size: 1.125rem; color: var(--heading); margin: 0; }
   .more__year, .more__tech { margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 0.8125rem; color: var(--muted); }

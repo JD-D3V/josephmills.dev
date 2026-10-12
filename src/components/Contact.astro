@@ -16,6 +16,7 @@ const kindLabel = { email: 'Email', phone: 'Phone', linkedin: 'LinkedIn', github
       <li class="card row">
         <span class="row__kind">{kindLabel[l.kind]}</span>
         <a href={l.href} target={l.kind === 'email' || l.kind === 'phone' ? undefined : '_blank'} rel={l.kind === 'email' || l.kind === 'phone' ? undefined : 'noopener'}>{l.label}</a>
+        {l.kind === 'email' && <button type="button" class="copy" data-copy={site.contact.email} hidden aria-live="polite">Copy</button>}
       </li>
     ))}
   </ul>
@@ -25,5 +26,12 @@ const kindLabel = { email: 'Email', phone: 'Phone', linkedin: 'LinkedIn', github
   .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 32px; }
   .rows { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; max-width: 560px; }
   .row { display: flex; flex-wrap: wrap; gap: 4px 16px; align-items: baseline; padding: 16px 20px; }
+  .copy { margin-left: auto; padding: 4px 12px; font-family: 'IBM Plex Mono', monospace; font-size: 0.75rem; color: var(--accent); background: transparent; border: 1px solid var(--border); border-radius: 8px; cursor: pointer; transition: background-color var(--dur-hover) ease; }
+  .copy:hover { background: var(--accent-soft); }
   .row__kind { font-family: 'IBM Plex Mono', monospace; font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); min-width: 80px; }
 </style>
+
+<script>
+  import { initCopyButtons } from '../scripts/copy';
+  initCopyButtons();
+</script>
