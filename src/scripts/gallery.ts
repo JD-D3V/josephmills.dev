@@ -29,15 +29,14 @@ function readItems(projectId: string): GalleryItem[] {
   }
 }
 
-function renderItem(item: GalleryItem, stage: HTMLElement): void {
-  stage.replaceChildren();
+function buildSlide(item: GalleryItem): HTMLElement {
+  const slide = el('div', { className: 'gallery__slide' });
   if (item.type === 'image') {
-    stage.append(el('img', { src: item.src, alt: item.alt }));
+    slide.append(el('img', { src: item.src, alt: item.alt, decoding: 'async' }));
   } else if (item.type === 'clip') {
     const video = el('video', { src: item.src, poster: item.poster, controls: true, loop: true, muted: true, playsInline: true });
     video.setAttribute('aria-label', item.alt);
-    stage.append(video);
-    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) video.play().catch(() => {});
+    slide.append(video);
   } else {
     const play = el('button', { type: 'button', className: 'gallery__yt' });
     play.setAttribute('aria-label', `Play video: ${item.alt}`);
@@ -49,10 +48,23 @@ function renderItem(item: GalleryItem, stage: HTMLElement): void {
       const frame = el('iframe', { src: youtubeEmbedUrl(item.id ?? ''), title: item.alt, allowFullscreen: true });
       frame.setAttribute('allow', 'autoplay; encrypted-media; picture-in-picture; fullscreen');
       frame.setAttribute('referrerpolicy', 'strict-origin-when-cross-origin');
-      stage.replaceChildren(frame);
+      slide.replaceChildren(frame);
     });
-    stage.append(play);
+    slide.append(play);
   }
+  return slide;
+}
+
+const reducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const preloaded = new Set<string>();
+
+function preload(item: GalleryItem | undefined): void {
+  if (item?.type !== 'image' || !item.src || preloaded.has(item.src)) return;
+  preloaded.add(item.src);
+  const img = new Image();
+  img.decoding = 'async';
+  img.src = item.src;
+  img.decode().catch(() => {});
 }
 
 function stopMedia(dialog: HTMLDialogElement): void {
@@ -60,7 +72,7 @@ function stopMedia(dialog: HTMLDialogElement): void {
   dialog.querySelectorAll('iframe').forEach((f) => f.remove());
 }
 
-function bind(dialog: HTMLDialogElement): (index: number, opener: HTMLElement) => void {
+function bind(dialog: HTMLDialogElement): { open: (index: number, opener: HTMLElement) => void; warm: (index: number) => void } {
   const projectId = dialog.dataset.galleryDialog ?? '';
   const items = readItems(projectId);
   const stage = dialog.querySelector<HTMLElement>('.gallery__stage')!;
@@ -70,14 +82,46 @@ function bind(dialog: HTMLDialogElement): (index: number, opener: HTMLElement) =
   const next = dialog.querySelector<HTMLButtonElement>('.gallery__next')!;
   let index = 0;
   let opener: HTMLElement | null = null;
+  let token = 0;
 
-  const show = (i: number) => {
+  const retire = (slide: Element, dir: number) => {
+    slide.classList.remove('is-active');
+    slide.setAttribute('inert', '');
+    slide.setAttribute('aria-hidden', 'true');
+    (slide as HTMLElement).style.setProperty('--dx', `${-dir * 24}px`);
+    slide.querySelectorAll('video').forEach((v) => v.pause());
+    setTimeout(() => slide.remove(), reducedMotion() ? 0 : 260);
+  };
+
+  const preloadAround = (i: number) => {
+    preload(items[i]);
+    preload(items[stepIndex(i, 1, items.length)]);
+    preload(items[stepIndex(i, -1, items.length)]);
+  };
+
+  const show = (i: number, dir = 0, instant = false) => {
+    const mine = ++token;
     index = i;
-    renderItem(items[index], stage);
     counter.textContent = `${index + 1} / ${items.length}`;
     caption.textContent = items[index].alt;
+    if (instant) stage.replaceChildren();
+    const slide = buildSlide(items[index]);
+    slide.style.setProperty('--dx', `${dir * 24}px`);
+    stage.append(slide);
+    const img = slide.querySelector('img');
+    const ready = img ? img.decode().catch(() => {}) : Promise.resolve();
+    void ready.then(() => {
+      if (mine !== token) return slide.remove();
+      stage.querySelectorAll('.gallery__slide.is-active').forEach((old) => retire(old, dir));
+      requestAnimationFrame(() => {
+        slide.classList.add('is-active');
+        const video = slide.querySelector('video');
+        if (video && !reducedMotion()) video.play().catch(() => {});
+      });
+      preloadAround(index);
+    });
   };
-  const step = (delta: number) => show(stepIndex(index, delta, items.length));
+  const step = (delta: number) => show(stepIndex(index, delta, items.length), delta);
 
   if (items.length < 2) {
     prev.hidden = true;
@@ -110,17 +154,31 @@ function bind(dialog: HTMLDialogElement): (index: number, opener: HTMLElement) =
     { passive: true },
   );
 
-  return (i, from) => {
+  const warm = (i: number) => preloadAround(Math.min(i, items.length - 1));
+  const open = (i: number, from: HTMLElement) => {
     if (!items.length) return;
     opener = from;
-    show(Math.min(i, items.length - 1));
+    show(Math.min(i, items.length - 1), 0, true);
     dialog.showModal();
   };
+  return { open, warm };
 }
 
 export function initGallery(): void {
   const openers = new Map<string, (index: number, opener: HTMLElement) => void>();
-  document.querySelectorAll<HTMLDialogElement>('dialog[data-gallery-dialog]').forEach((d) => openers.set(d.dataset.galleryDialog ?? '', bind(d)));
+  const warmUp = new Map<string, (index: number) => void>();
+  document.querySelectorAll<HTMLDialogElement>('dialog[data-gallery-dialog]').forEach((d) => {
+    const api = bind(d);
+    openers.set(d.dataset.galleryDialog ?? '', api.open);
+    warmUp.set(d.dataset.galleryDialog ?? '', api.warm);
+  });
+
+  const warm = (e: Event) => {
+    const trigger = (e.target as Element).closest<HTMLElement>('[data-gallery]');
+    if (trigger) warmUp.get(trigger.dataset.gallery ?? '')?.(Number(trigger.dataset.index ?? 0));
+  };
+  document.addEventListener('pointerover', warm);
+  document.addEventListener('focusin', warm);
 
   document.addEventListener('click', (e) => {
     const trigger = (e.target as Element).closest<HTMLElement>('[data-gallery]');

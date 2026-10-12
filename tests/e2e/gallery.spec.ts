@@ -100,3 +100,53 @@ test('closing stops video and removes the YouTube iframe', async ({ page }) => {
   await page.keyboard.press('Escape');
   await expect(page.locator('dialog iframe')).toHaveCount(0);
 });
+
+test('stage keeps its size when stepping between photos', async ({ page }) => {
+  await page.goto('/');
+  await opener(page, 'boring-web-browser').click();
+  const stage = page.locator('dialog[open] .gallery__stage');
+  await expect(counter(page)).toHaveText('1 / 5');
+  await page.waitForTimeout(400); // let the open transition finish
+  const before = await stage.boundingBox();
+  await page.keyboard.press('ArrowRight');
+  await expect(counter(page)).toHaveText('2 / 5');
+  await page.waitForTimeout(400);
+  expect(await stage.boundingBox()).toEqual(before);
+});
+
+test('only one slide remains after rapid stepping', async ({ page }) => {
+  await page.goto('/');
+  await opener(page, 'boring-web-browser').click();
+  for (let i = 0; i < 3; i++) await page.keyboard.press('ArrowRight');
+  await expect(counter(page)).toHaveText('4 / 5');
+  await expect(page.locator('dialog[open] .gallery__slide')).toHaveCount(1);
+  await expect(page.locator('dialog[open] .gallery__slide.is-active img')).toHaveAttribute('alt', /protection page/i);
+});
+
+test('neighbouring photos are requested before they are shown', async ({ page }) => {
+  const urls: string[] = [];
+  page.on('request', (r) => r.url().endsWith('.webp') && urls.push(r.url()));
+  await page.goto('/');
+  await opener(page, 'boring-web-browser').click();
+  await expect(counter(page)).toHaveText('1 / 5');
+  await page.waitForTimeout(500);
+  const slideSrcs = await page.evaluate(() =>
+    JSON.parse(document.querySelector('script[data-gallery-items="boring-web-browser"]')!.textContent!).map((i: { src: string }) => i.src),
+  );
+  // photos 2 and 5 (next and previous of the first) were fetched without being displayed
+  for (const src of [slideSrcs[1], slideSrcs[4]]) expect(urls.some((u) => u.endsWith(src))).toBe(true);
+  expect(urls.some((u) => u.endsWith(slideSrcs[3]))).toBe(false);
+});
+
+test('reduced motion: no leftover slides and no transition', async ({ browser }) => {
+  const context = await browser.newContext({ reducedMotion: 'reduce' });
+  const page = await context.newPage();
+  await page.goto('/');
+  await opener(page, 'boring-web-browser').click();
+  await page.keyboard.press('ArrowRight');
+  await expect(counter(page)).toHaveText('2 / 5');
+  await expect(page.locator('dialog[open] .gallery__slide')).toHaveCount(1);
+  const dur = await page.locator('dialog[open]').evaluate((d) => getComputedStyle(d).transitionDuration);
+  expect(dur).toMatch(/^0s/);
+  await context.close();
+});
