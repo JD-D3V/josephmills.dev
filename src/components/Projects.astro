@@ -1,5 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
+import { site } from '../data/site';
 import SectionHeader from './SectionHeader.astro';
 import ProjectCard from './ProjectCard.astro';
 import Gallery from './Gallery.astro';
@@ -34,9 +35,34 @@ const galleries = await Promise.all(
   <div class="projects">
     {entries.map((entry, i) => <ProjectCard entry={entry} eager={i === 0} />)}
   </div>
+  <div id="more-projects" class="more">
+    <h3 class="more__title">More projects</h3>
+    <div class="more__grid">
+      {site.moreProjects.map((p) => (
+        <article class="card more__card">
+          <div class="more__head">
+            <h4>{p.title}</h4>
+            <p class="more__year">{p.year}</p>
+          </div>
+          <p class="more__tech">{p.tech}</p>
+          <p>{p.text}</p>
+          {p.href && <p class="more__link"><a href={p.href} target="_blank" rel="noopener">View project <span aria-hidden="true">↗</span></a></p>}
+        </article>
+      ))}
+    </div>
+  </div>
   {galleries.map((g) => <Gallery projectId={g.id} title={g.title} items={g.items} />)}
 </section>
 
 <style>
   .projects { display: grid; gap: 32px; }
+  .more { margin-top: 56px; }
+  .more__title { font-size: 1.25rem; margin-bottom: 20px; }
+  .more__grid { display: grid; gap: 20px; grid-template-columns: repeat(auto-fill, minmax(min(320px, 100%), 1fr)); }
+  .more__head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+  .more__card h4 { font-family: 'Space Grotesk', sans-serif; font-size: 1.125rem; color: var(--heading); margin: 0; }
+  .more__year, .more__tech { margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 0.8125rem; color: var(--muted); }
+  .more__tech { margin: 4px 0 12px; }
+  .more__link { margin: 0; }
+  .more__card p:not(.more__year):not(.more__tech):not(.more__link) { margin: 0 0 12px; }
 </style>

@@ -17,12 +17,12 @@ test.beforeEach(async ({ page }) => stubMedia(page));
 test('real projects render in order', async ({ page }) => {
   await page.goto('/');
   const titles = await page.locator('article.project h3').allTextContents();
-  expect(titles.slice(0, 4)).toEqual(['The Boring Web Browser', 'beyonder', 'WaterTempProject', 'calgary-watermain-agent']);
+  expect(titles.slice(0, 4)).toEqual(['The Boring Web Browser', 'beyonder', 'WaterTempProject', 'Pipe Dreams']);
 });
 
 test('private projects have no GitHub link', async ({ page }) => {
   await page.goto('/');
-  for (const id of ['water-temp-monitor', 'calgary-watermain-agent']) {
+  for (const id of ['water-temp-monitor']) {
     await expect(card(page, id).locator('a[href*="github.com"]')).toHaveCount(0);
   }
 });

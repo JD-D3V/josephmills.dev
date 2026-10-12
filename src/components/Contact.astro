@@ -2,7 +2,7 @@
 import { site } from '../data/site';
 import SectionHeader from './SectionHeader.astro';
 
-const kindLabel = { email: 'Email', linkedin: 'LinkedIn', github: 'GitHub' } as const;
+const kindLabel = { email: 'Email', phone: 'Phone', linkedin: 'LinkedIn', github: 'GitHub' } as const;
 ---
 
 <section id="contact" class="section container" aria-labelledby="contact-title">
@@ -15,7 +15,7 @@ const kindLabel = { email: 'Email', linkedin: 'LinkedIn', github: 'GitHub' } as 
     {site.contact.links.map((l) => (
       <li class="card row">
         <span class="row__kind">{kindLabel[l.kind]}</span>
-        <a href={l.href} target={l.kind === 'email' ? undefined : '_blank'} rel={l.kind === 'email' ? undefined : 'noopener'}>{l.label}</a>
+        <a href={l.href} target={l.kind === 'email' || l.kind === 'phone' ? undefined : '_blank'} rel={l.kind === 'email' || l.kind === 'phone' ? undefined : 'noopener'}>{l.label}</a>
       </li>
     ))}
   </ul>

@@ -116,7 +116,7 @@ function bind(dialog: HTMLDialogElement): { open: (index: number, opener: HTMLEl
       if (mine !== token) return slide.remove();
       stage.querySelectorAll('.gallery__slide.is-active').forEach((old) => (swap === 'instant' ? old.remove() : retire(old, dir)));
       requestAnimationFrame(() => {
-        if (mine !== token || !dialog.open) return;
+        if (mine !== token || !dialog.open) return slide.remove(); // superseded or closed before its first frame
         slide.classList.add('is-active');
         const video = slide.querySelector('video');
         if (video && !reducedMotion()) video.play().catch(() => {});
@@ -134,9 +134,19 @@ function bind(dialog: HTMLDialogElement): { open: (index: number, opener: HTMLEl
   }
   prev.addEventListener('click', () => step(-1));
   next.addEventListener('click', () => step(1));
-  dialog.querySelector('.gallery__close')!.addEventListener('click', () => dialog.close());
+  // Stop media the moment closing starts (Escape fires `cancel`; buttons call this first), not when the async `close` event lands.
+  const shut = () => {
+    token++; // cancel any slide that is still decoding or waiting for its first frame
+    stopMedia(dialog);
+  };
+  const closeNow = () => {
+    shut();
+    dialog.close();
+  };
+  dialog.addEventListener('cancel', shut);
+  dialog.querySelector('.gallery__close')!.addEventListener('click', closeNow);
   dialog.addEventListener('click', (e) => {
-    if (e.target === dialog) dialog.close();
+    if (e.target === dialog) closeNow();
   });
   dialog.addEventListener('keydown', (e) => {
     if (items.length < 2) return;
@@ -144,8 +154,7 @@ function bind(dialog: HTMLDialogElement): { open: (index: number, opener: HTMLEl
     else if (e.key === 'ArrowLeft') step(-1, false);
   });
   dialog.addEventListener('close', () => {
-    token++; // cancel any slide that is still decoding or waiting for its first frame
-    stopMedia(dialog);
+    shut();
     opener?.focus();
   });
 
