@@ -1,14 +1,25 @@
 ---
 import { site } from '../data/site';
+import { Image } from 'astro:assets';
 import placeholder from '../assets/portrait-placeholder.svg';
-
-const portrait = site.portrait ?? placeholder;
-const alt = site.portrait ? `Portrait of ${site.name}` : 'Portrait placeholder';
 ---
 
 <header class="hero container" id="top">
   <figure class="hero__portrait">
-    <img src={portrait.src} width={portrait.width} height={portrait.height} alt={alt} fetchpriority="high" />
+    {site.portrait ? (
+      <Image
+        src={site.portrait}
+        alt={`Portrait of ${site.name}`}
+        width={380}
+        widths={[380, 640]}
+        sizes="(min-width: 900px) 380px, (min-width: 600px) 320px, 168px"
+        format="webp"
+        loading="eager"
+        fetchpriority="high"
+      />
+    ) : (
+      <img src={placeholder.src} width={placeholder.width} height={placeholder.height} alt="Portrait placeholder" fetchpriority="high" />
+    )}
     <figcaption class="pill">{site.location}</figcaption>
   </figure>
   <div class="hero__copy">

@@ -1,6 +1,7 @@
 // All page copy outside the featured projects lives here. Facts come from the résumé; prose I drafted
 // from it is marked `// DRAFT` so it can be reviewed (`grep -rn DRAFT src`).
 import type { ImageMetadata } from 'astro';
+import portraitImage from '../assets/portrait.jpg';
 
 export interface Link {
   label: string;
@@ -35,7 +36,7 @@ export const site: SiteConfig = {
   tagline: 'Software Engineer · AI/ML · Calgary',
   status: 'Open to Winter 2027 co-ops', // switch to 'Open to junior roles' after graduation
   summary: 'I build software end to end, from a custom Chromium browser to LLM apps and open-source ML research.', // DRAFT wording
-  // portrait: portraitImage, // add a photo: import it from src/assets and set it here
+  portrait: portraitImage, // remove this line to fall back to the monogram placeholder
   location: 'Calgary, AB',
   resume: '/resume.pdf',
   about: [
