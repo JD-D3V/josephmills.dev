@@ -99,20 +99,22 @@ function bind(dialog: HTMLDialogElement): { open: (index: number, opener: HTMLEl
     preload(items[stepIndex(i, -1, items.length)]);
   };
 
-  const show = (i: number, dir = 0, instant = false) => {
+  // swap: 'open' replaces everything, 'instant' (keyboard) swaps with no motion, 'slide' crossfades and slides.
+  const show = (i: number, dir = 0, swap: 'open' | 'instant' | 'slide' = 'slide') => {
     const mine = ++token;
     index = i;
     counter.textContent = `${index + 1} / ${items.length}`;
     caption.textContent = items[index].alt;
-    if (instant) stage.replaceChildren();
+    if (swap === 'open') stage.replaceChildren();
     const slide = buildSlide(items[index]);
     slide.style.setProperty('--dx', `${dir * 24}px`);
+    if (swap === 'instant') slide.classList.add('is-instant');
     stage.append(slide);
     const img = slide.querySelector('img');
     const ready = img ? img.decode().catch(() => {}) : Promise.resolve();
     void ready.then(() => {
       if (mine !== token) return slide.remove();
-      stage.querySelectorAll('.gallery__slide.is-active').forEach((old) => retire(old, dir));
+      stage.querySelectorAll('.gallery__slide.is-active').forEach((old) => (swap === 'instant' ? old.remove() : retire(old, dir)));
       requestAnimationFrame(() => {
         if (mine !== token || !dialog.open) return;
         slide.classList.add('is-active');
@@ -122,8 +124,9 @@ function bind(dialog: HTMLDialogElement): { open: (index: number, opener: HTMLEl
       preloadAround(index);
     });
   };
-  // Keyboard stepping repeats a lot, so it only crossfades (no slide); buttons and swipes also slide.
-  const step = (delta: number, slide = true) => show(stepIndex(index, delta, items.length), slide ? delta : 0);
+  // Keyboard stepping repeats a lot, so it never animates; buttons and swipes crossfade and slide.
+  const step = (delta: number, animate = true) =>
+    show(stepIndex(index, delta, items.length), animate ? delta : 0, animate ? 'slide' : 'instant');
 
   if (items.length < 2) {
     prev.hidden = true;
@@ -161,7 +164,7 @@ function bind(dialog: HTMLDialogElement): { open: (index: number, opener: HTMLEl
   const open = (i: number, from: HTMLElement) => {
     if (!items.length) return;
     opener = from;
-    show(Math.min(i, items.length - 1), 0, true);
+    show(Math.min(i, items.length - 1), 0, 'open');
     dialog.showModal();
   };
   return { open, warm };

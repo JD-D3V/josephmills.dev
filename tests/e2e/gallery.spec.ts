@@ -150,3 +150,17 @@ test('reduced motion: no leftover slides and no transition', async ({ browser })
   expect(dur).toMatch(/^0s/);
   await context.close();
 });
+
+test('keyboard stepping swaps instantly; the Next button still crossfades', async ({ page }) => {
+  await page.goto('/');
+  await opener(page, 'boring-web-browser').click();
+  await expect(counter(page)).toHaveText('1 / 5');
+  await page.waitForTimeout(400); // let the open transition and first slide settle
+  await page.keyboard.press('ArrowRight');
+  await expect(counter(page)).toHaveText('2 / 5');
+  // no fade-out overlap: the old slide is gone as soon as the new one is ready (animated exit is ~260 ms)
+  await expect(page.locator('dialog[open] .gallery__slide')).toHaveCount(1, { timeout: 150 });
+  await page.locator('dialog[open] .gallery__next').click();
+  await expect(counter(page)).toHaveText('3 / 5');
+  await expect(page.locator('dialog[open] .gallery__slide')).toHaveCount(2, { timeout: 150 });
+});
