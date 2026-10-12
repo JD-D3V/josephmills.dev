@@ -49,3 +49,22 @@ test('beyond covers athletics and hackathons', async ({ page }) => {
   await expect(page.locator('#beyond')).toContainText('Biathlon');
   await expect(page.locator('#beyond')).toContainText('Team Alberta');
 });
+
+test('only the Spruce Meadows job shows a photo, optimised, with alt text', async ({ page }) => {
+  await page.goto('/');
+  const jobs = page.locator('#experience article');
+  await expect(jobs).toHaveCount(3);
+  await expect(page.locator('#experience img')).toHaveCount(1);
+  const img = jobs.nth(2).locator('img');
+  await expect(img).toHaveAttribute('src', /\.webp$/);
+  await expect(img).toHaveAttribute('alt', /Spruce Meadows/);
+  await expect(img).toHaveAttribute('width', /\d+/);
+  await img.scrollIntoViewIfNeeded(); // lazy-loaded
+  await expect(img).toBeVisible();
+  await expect.poll(() => img.evaluate((el: HTMLImageElement) => el.complete && el.naturalWidth > 0)).toBe(true);
+});
+
+test('no horizontal scroll with the experience photo', async ({ page }) => {
+  await page.goto('/#experience');
+  expect(await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth)).toBeLessThanOrEqual(0);
+});
