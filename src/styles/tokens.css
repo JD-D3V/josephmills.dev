@@ -2,7 +2,7 @@
   color-scheme: light;
   --bg: #f4f3ee;
   --bg-raised: #ffffff;
-  --grid: rgba(20, 30, 40, 0.05);
+  --grid: rgba(20, 30, 40, 0.025);
   --text: #39434f;
   --heading: #1a2230;
   --muted: #666f7b;
@@ -15,7 +15,7 @@
   color-scheme: dark;
   --bg: #111417;
   --bg-raised: #181c20;
-  --grid: rgba(255, 255, 255, 0.04);
+  --grid: rgba(255, 255, 255, 0.02);
   --text: #c9d1d9;
   --heading: #f0f3f6;
   --muted: #8b949e;
@@ -30,7 +30,7 @@
     color-scheme: dark;
     --bg: #111417;
     --bg-raised: #181c20;
-    --grid: rgba(255, 255, 255, 0.04);
+    --grid: rgba(255, 255, 255, 0.02);
     --text: #c9d1d9;
     --heading: #f0f3f6;
     --muted: #8b949e;
