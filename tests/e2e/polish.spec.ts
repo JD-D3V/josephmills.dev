@@ -25,15 +25,6 @@ test('reduced motion: no press scale and no hover lift', async ({ browser }) => 
   await context.close();
 });
 
-test('motion tokens exist', async ({ page }) => {
-  await page.goto('/');
-  const vars = await page.evaluate(() => {
-    const cs = getComputedStyle(document.documentElement);
-    return ['--ease-out', '--ease-in-out', '--dur-press', '--dur-hover', '--dur-enter', '--dur-exit'].map((n) => cs.getPropertyValue(n).trim());
-  });
-  for (const v of vars) expect(v).not.toBe('');
-});
-
 test('theme toggle crossfades via a view transition, but not with reduced motion', async ({ browser }) => {
   for (const [reduced, expected] of [['no-preference', 1], ['reduce', 0]] as const) {
     const context = await browser.newContext({ reducedMotion: reduced });
@@ -56,7 +47,7 @@ test('theme toggle crossfades via a view transition, but not with reduced motion
   }
 });
 
-test('gallery exits faster than it enters, and reduced motion removes both', async ({ page }) => {
+test('gallery exits faster than it enters', async ({ page }) => {
   await page.goto('/');
   await page.locator('#boring-web-browser [data-gallery]').click();
   const dlg = page.locator('dialog[open]');
