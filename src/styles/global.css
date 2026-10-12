@@ -158,12 +158,9 @@ video {
   padding: 12px 20px;
   border: 1px solid var(--accent);
   cursor: pointer;
-  transition: transform 0.15s ease, background-color 0.15s ease;
+  transition: transform var(--dur-press) var(--ease-out), background-color var(--dur-hover) ease, color var(--dur-hover) ease;
 }
 
-.btn:hover {
-  transform: translateY(-1px);
-}
 
 .btn--primary {
   background: var(--accent);
@@ -186,10 +183,22 @@ video {
   padding: 24px;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .btn {
-    transition: none;
+/* Movement only when motion is allowed; colour feedback always stays. */
+@media (prefers-reduced-motion: no-preference) {
+  @media (hover: hover) and (pointer: fine) {
+    .btn:hover {
+      transform: translateY(-1px);
+    }
   }
+  .btn:active {
+    transform: scale(0.97);
+  }
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: var(--dur-enter);
+  animation-timing-function: var(--ease-out);
 }
 
 .section {

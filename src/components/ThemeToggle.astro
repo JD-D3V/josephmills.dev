@@ -21,6 +21,10 @@
     border: 1px solid var(--border);
     border-radius: 10px;
     cursor: pointer;
+    transition: transform var(--dur-press) var(--ease-out), background-color var(--dur-hover) ease;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .theme-toggle:active { transform: scale(0.95); }
   }
   .icon-sun { display: none; }
   :global([data-theme='dark']) .icon-sun { display: block; }

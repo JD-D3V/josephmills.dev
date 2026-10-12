@@ -41,8 +41,16 @@ export function initThemeToggle(button: HTMLElement): void {
   applyLabel(button, current());
   button.addEventListener('click', () => {
     const next: Theme = current() === 'dark' ? 'light' : 'dark';
-    root.dataset.theme = next;
+    const apply = () => {
+      root.dataset.theme = next;
+      applyLabel(button, next);
+    };
     writeStoredTheme(safeStorage(), next);
-    applyLabel(button, next);
+    // Rare action, so a short crossfade is fine; skipped when motion is reduced or unsupported.
+    if (typeof document.startViewTransition === 'function' && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      document.startViewTransition(apply);
+    } else {
+      apply();
+    }
   });
 }

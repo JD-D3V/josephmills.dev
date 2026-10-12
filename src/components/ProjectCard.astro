@@ -45,6 +45,9 @@ const { Content } = await render(entry);
   .stat { overflow-wrap: anywhere; }
   .project__desc :global(p:last-child) { margin-bottom: 0; }
   .project__links { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 20px; }
+  @media (max-width: 479px) {
+    .project { padding: 14px; gap: 18px; }
+  }
   @media (min-width: 1000px) {
     .project { grid-template-columns: 1.1fr 1fr; gap: 40px; padding: 28px; align-items: center; }
     :global(.projects > .project:nth-child(even)) .project__media { order: 2; }

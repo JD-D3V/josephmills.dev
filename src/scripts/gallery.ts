@@ -114,6 +114,7 @@ function bind(dialog: HTMLDialogElement): { open: (index: number, opener: HTMLEl
       if (mine !== token) return slide.remove();
       stage.querySelectorAll('.gallery__slide.is-active').forEach((old) => retire(old, dir));
       requestAnimationFrame(() => {
+        if (mine !== token || !dialog.open) return;
         slide.classList.add('is-active');
         const video = slide.querySelector('video');
         if (video && !reducedMotion()) video.play().catch(() => {});
@@ -121,7 +122,8 @@ function bind(dialog: HTMLDialogElement): { open: (index: number, opener: HTMLEl
       preloadAround(index);
     });
   };
-  const step = (delta: number) => show(stepIndex(index, delta, items.length), delta);
+  // Keyboard stepping repeats a lot, so it only crossfades (no slide); buttons and swipes also slide.
+  const step = (delta: number, slide = true) => show(stepIndex(index, delta, items.length), slide ? delta : 0);
 
   if (items.length < 2) {
     prev.hidden = true;
@@ -135,10 +137,11 @@ function bind(dialog: HTMLDialogElement): { open: (index: number, opener: HTMLEl
   });
   dialog.addEventListener('keydown', (e) => {
     if (items.length < 2) return;
-    if (e.key === 'ArrowRight') step(1);
-    else if (e.key === 'ArrowLeft') step(-1);
+    if (e.key === 'ArrowRight') step(1, false);
+    else if (e.key === 'ArrowLeft') step(-1, false);
   });
   dialog.addEventListener('close', () => {
+    token++; // cancel any slide that is still decoding or waiting for its first frame
     stopMedia(dialog);
     opener?.focus();
   });

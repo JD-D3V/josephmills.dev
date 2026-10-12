@@ -83,6 +83,14 @@ const { item, title, index, projectId, eager = false, count = 0 } = Astro.props;
     border-radius: 14px;
     cursor: zoom-in;
   }
+  @media (prefers-reduced-motion: no-preference) {
+    .media-frame { transition: transform var(--dur-press) var(--ease-out); }
+    .media-frame :global(img), .media-frame video { transition: transform 250ms var(--ease-out); }
+    @media (hover: hover) and (pointer: fine) {
+      button.media-frame:hover :global(img), button.media-frame:hover video { transform: scale(1.02); }
+    }
+    button.media-frame:active { transform: scale(0.99); }
+  }
   .media-frame :global(img),
   .media-frame video {
     display: block;
