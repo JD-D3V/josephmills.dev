@@ -2,16 +2,18 @@
 title: The Boring Web Browser
 order: 1
 category: SHIPPED SOFTWARE
-tech: Chromium · C++ · Python · Windows
+tech: Chromium · C++ · Rust · Python · GitHub Actions
 stats:
-  - CHROMIUM 153
-  - RELEASE 1 SHIPPED
-  - SIGNED UPDATES
+  - 37 C++ CHANGES
+  - 2 PUBLIC RELEASES
+  - SIGNED AUTO-UPDATES
 links:
   - label: GitHub
     href: https://github.com/JD-D3V/boring-web-browser
+  - label: Website
+    href: https://jd-d3v.github.io/boring-web-browser
   - label: Download
-    href: https://github.com/JD-D3V/boring-web-browser/releases/tag/v153.0.8010.52.1
+    href: https://github.com/JD-D3V/boring-web-browser/releases
 media:
   - type: image
     src: ../../assets/projects/boring-web-browser/browsing.png
@@ -30,5 +32,5 @@ media:
     alt: The browser menu with Senior Safe Mode and reader view
 ---
 
-<!-- DRAFT -->
-A plain, private Windows browser: Chromium's engine, de-Googled with ungoogled-chromium, plus a small patch layer of my own for blocking, privacy defaults and a calmer UI. I handle the build pipeline, the Windows installer and the signed update channel, and Release 1 shipped on Chromium 153.
+<!-- DRAFT wording -->
+A privacy-focused web browser built on Chromium, with 37 C++ changes to its source and 2 public releases. I interviewed seniors who had fallen for online scams and surveyed Reddit users to decide which safety features to build, then added a Rust ad-blocking engine that blocks trackers disguised as part of the site you're visiting, opt-in AI page summaries from 5 LLM providers with encrypted storage of users' API keys, and a GitHub Actions pipeline that automates releases, including signed automatic updates, with 30+ Python end-to-end test suites run on every build.

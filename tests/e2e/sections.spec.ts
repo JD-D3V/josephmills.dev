@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 
-const ids = ['about', 'skills', 'projects', 'beyond', 'contact'];
+const ids = ['about', 'experience', 'skills', 'projects', 'beyond', 'contact'];
 
 test('all sections present and linked from nav', async ({ page }) => {
   await page.goto('/');

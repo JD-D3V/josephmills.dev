@@ -1,0 +1,31 @@
+---
+import { site } from '../data/site';
+import SectionHeader from './SectionHeader.astro';
+---
+
+<section id="experience" class="section container" aria-labelledby="experience-title">
+  <SectionHeader id="experience" label="Experience" title="Where I've worked" />
+  <div class="jobs">
+    {site.experience.map((job) => (
+      <article class="card job">
+        <div class="job__head">
+          <h3>{job.role}</h3>
+          <p class="job__dates">{job.dates}</p>
+        </div>
+        <p class="job__org">{job.org} · {job.place}</p>
+        <ul>
+          {job.bullets.map((b) => <li>{b}</li>)}
+        </ul>
+      </article>
+    ))}
+  </div>
+</section>
+
+<style>
+  .jobs { display: grid; gap: 20px; }
+  .job__head { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 24px; align-items: baseline; }
+  .job h3 { font-size: 1.25rem; margin: 0; min-width: 0; }
+  .job__dates { margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 0.8125rem; color: var(--muted); }
+  .job__org { margin: 4px 0 16px; color: var(--muted); font-style: italic; }
+  ul { margin: 0; padding-left: 20px; display: grid; gap: 6px; }
+</style>

@@ -116,7 +116,7 @@ function bind(dialog: HTMLDialogElement): { open: (index: number, opener: HTMLEl
       if (mine !== token) return slide.remove();
       stage.querySelectorAll('.gallery__slide.is-active').forEach((old) => (swap === 'instant' ? old.remove() : retire(old, dir)));
       requestAnimationFrame(() => {
-        if (mine !== token || !dialog.open) return;
+        if (mine !== token || !dialog.open) return slide.remove(); // superseded or closed before its first frame
         slide.classList.add('is-active');
         const video = slide.querySelector('video');
         if (video && !reducedMotion()) video.play().catch(() => {});

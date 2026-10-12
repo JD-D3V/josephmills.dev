@@ -1,12 +1,13 @@
 ---
-title: calgary-watermain-agent
+title: Pipe Dreams
 order: 4
 category: HACKATHON · AGENT
-tech: IEEE YP Industry Hackathon 2026
+tech: Python · React · TypeScript · FastAPI · scikit-learn · GeoPandas · ElevenLabs
 stats:
-  - IEEE YP 2026
-  - REPAIR RANKING
+  - WON BEST PROJECT BUILT WITH ELEVENLABS
+  - 26 TEAMS
+  - 60,740 PIPE SEGMENTS
 ---
 
-<!-- DRAFT -->
-An agent built for the IEEE YP Industry Hackathon 2026 (Energy and Infrastructure Case 8) that ranks Calgary water-main repairs using the City's open data on main breaks and the public water-main network.
+<!-- DRAFT wording -->
+Built with one teammate at the IEEE Southern Alberta Industry Hackathon 2026, where it won Best Project Built with ElevenLabs out of 26 teams. An AI agent ranks Calgary water mains for inspection using 37,538 past breaks and 60,740 pipe segments, with a React/TypeScript dashboard and FastAPI backend. An ElevenLabs voice agent talks city staff through why each pipe was ranked.
