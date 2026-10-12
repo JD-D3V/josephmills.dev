@@ -40,7 +40,7 @@ const links = [
   .nav__brand { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; color: var(--heading); font-family: 'Space Grotesk', sans-serif; font-weight: 600; }
   .nav__badge { display: inline-grid; place-items: center; width: 32px; height: 32px; border: 1.5px solid var(--accent); border-radius: 8px; color: var(--accent); font-family: 'IBM Plex Mono', monospace; font-size: 0.8125rem; font-weight: 600; }
   .nav__links { display: flex; gap: 4px; list-style: none; margin: 0 0 0 auto; padding: 0; }
-  .nav__links a { display: block; padding: 8px 12px; border-radius: 8px; color: var(--text); text-decoration: none; font-family: 'IBM Plex Mono', monospace; font-size: 0.875rem; white-space: nowrap; }
+  .nav__links a { display: block; padding: 8px 12px; border-radius: 8px; color: var(--text); text-decoration: none; font-family: 'IBM Plex Mono', monospace; font-size: 0.875rem; white-space: nowrap; transition: color var(--dur-hover) ease, background-color var(--dur-hover) ease; }
   .nav__links a:hover { color: var(--heading); background: var(--accent-soft); }
   .nav__links a[aria-current='true'] { color: var(--accent); background: var(--accent-soft); }
   .nav__toggle { display: flex; }

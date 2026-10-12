@@ -29,19 +29,26 @@ const json = JSON.stringify(items).replace(/</g, '\\u003c');
   .gallery[open] { display: flex; flex-direction: column; }
   .gallery::backdrop { background: rgba(0, 0, 0, 0.75); }
 
-  /* Open/close: fade + slight rise; display and overlay are transitioned so the exit is visible too. */
+  /* Open/close: fade + slight rise. Exit (150 ms) is quicker than entrance (220 ms); display and overlay are
+     transitioned so the exit is visible. */
   @media (prefers-reduced-motion: no-preference) {
     .gallery {
       opacity: 0;
       transform: translateY(14px) scale(0.98);
-      transition: opacity 0.22s ease, transform 0.22s ease, display 0.22s allow-discrete, overlay 0.22s allow-discrete;
+      transition-property: opacity, transform, display, overlay;
+      transition-duration: var(--dur-exit);
+      transition-timing-function: var(--ease-out);
+      transition-behavior: allow-discrete;
     }
-    .gallery[open] { opacity: 1; transform: none; }
+    .gallery[open] { opacity: 1; transform: none; transition-duration: var(--dur-enter); }
     .gallery::backdrop {
       background: rgba(0, 0, 0, 0);
-      transition: background 0.22s ease, display 0.22s allow-discrete, overlay 0.22s allow-discrete;
+      transition-property: background, display, overlay;
+      transition-duration: var(--dur-exit);
+      transition-timing-function: var(--ease-out);
+      transition-behavior: allow-discrete;
     }
-    .gallery[open]::backdrop { background: rgba(0, 0, 0, 0.75); }
+    .gallery[open]::backdrop { background: rgba(0, 0, 0, 0.75); transition-duration: var(--dur-enter); }
     @starting-style {
       .gallery[open] { opacity: 0; transform: translateY(14px) scale(0.98); }
       .gallery[open]::backdrop { background: rgba(0, 0, 0, 0); }
@@ -55,8 +62,9 @@ const json = JSON.stringify(items).replace(/</g, '\\u003c');
   .gallery__stage { position: relative; width: min(100%, calc(70vh * 16 / 9)); aspect-ratio: 16 / 9; margin: 0 auto; min-width: 0; }
   .gallery__slide { position: absolute; inset: 0; display: grid; place-items: center; opacity: 0; transform: translateX(var(--dx, 0)); pointer-events: none; }
   .gallery__slide.is-active { opacity: 1; transform: none; pointer-events: auto; }
+  .gallery__slide.is-instant { transition: none; }
   @media (prefers-reduced-motion: no-preference) {
-    .gallery__slide { transition: opacity 0.22s ease, transform 0.22s ease; }
+    .gallery__slide { transition: opacity var(--dur-enter) var(--ease-out), transform var(--dur-enter) var(--ease-out); }
   }
   .gallery__slide img, .gallery__slide video { max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; border-radius: 8px; }
   .gallery__slide video { width: 100%; height: 100%; }
@@ -65,8 +73,11 @@ const json = JSON.stringify(items).replace(/</g, '\\u003c');
   .gallery__yt img { max-width: 100%; max-height: 100%; }
   .gallery__yt-glyph { position: absolute; inset: 0; display: grid; place-items: center; font-size: 3rem; color: #fff; background: rgba(0, 0, 0, 0.3); border-radius: 8px; }
   .gallery__caption { margin: 0; padding: 12px 16px 16px; text-align: center; color: var(--muted); font-size: 0.9375rem; min-height: 3.2em; }
-  .gallery__nav, .gallery__close { width: 44px; height: 44px; display: grid; place-items: center; font-size: 1.5rem; line-height: 1; color: var(--heading); background: transparent; border: 1px solid var(--border); border-radius: 10px; cursor: pointer; transition: background-color 0.15s ease; }
+  .gallery__nav, .gallery__close { width: 44px; height: 44px; display: grid; place-items: center; font-size: 1.5rem; line-height: 1; color: var(--heading); background: transparent; border: 1px solid var(--border); border-radius: 10px; cursor: pointer; transition: background-color var(--dur-hover) ease, transform var(--dur-press) var(--ease-out); }
   .gallery__nav:hover, .gallery__close:hover { background: var(--accent-soft); }
+  @media (prefers-reduced-motion: no-preference) {
+    .gallery__nav:active, .gallery__close:active { transform: scale(0.95); }
+  }
   .gallery__nav[hidden] { display: none; }
   @media (max-width: 599px) {
     .gallery__nav { width: 36px; height: 36px; }

@@ -34,6 +34,11 @@ const alt = site.portrait ? `Portrait of ${site.name}` : 'Portrait placeholder';
   .hero__tagline { margin: 0 0 20px; font-family: 'IBM Plex Mono', monospace; color: var(--accent); font-size: 1rem; }
   .hero__summary { max-width: 560px; font-size: 1.1875rem; margin-bottom: 28px; }
   .hero__actions { display: flex; flex-wrap: wrap; gap: 12px; }
+  @media (max-width: 599px) {
+    .hero { gap: 24px; padding-top: 28px; padding-bottom: 48px; }
+    .hero__portrait { max-width: 168px; }
+    .hero__actions .btn { flex: 1 1 100%; }
+  }
   @media (min-width: 900px) {
     .hero { grid-template-columns: 1.4fr 1fr; gap: 64px; padding-top: 80px; padding-bottom: 96px; }
     .hero__copy { order: 1; }
