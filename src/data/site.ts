@@ -156,7 +156,7 @@ export const site: SiteConfig = {
     },
     {
       title: 'Coaching',
-      text: 'I coached junior biathletes at Bragg Creek Nordic for four seasons, running training, supervising range safety, and preparing new athletes for their first provincial races.', // DRAFT wording
+      text: 'I coached junior biathletes at Bragg Creek Nordic for four seasons, running training, supervising range safety, and preparing new athletes for their first provincial races. Biathlon Alberta gave me the 2021 Ruedi Setz Memorial Award for developing the sport in the province.', // DRAFT wording
     },
     {
       title: 'Hackathons',
