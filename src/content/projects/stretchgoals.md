@@ -7,6 +7,9 @@ stats:
   - 1ST PLACE · MRUHACKS 2026
   - ON-DEVICE POSE TRACKING
   - 8 GUIDED STRETCHES
+links:
+  - label: GitHub
+    href: https://github.com/darrenlyl/stretchGoals
 media:
   - type: image
     src: ../../assets/projects/stretchgoals/home.png
