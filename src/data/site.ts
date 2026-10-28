@@ -160,7 +160,7 @@ export const site: SiteConfig = {
     },
     {
       title: 'Hackathons',
-      text: 'My team won Best Project Built with ElevenLabs at the IEEE Southern Alberta Industry Hackathon 2026, and I built a peer-to-peer payment app in 24 hours at MRUHacks.', // DRAFT wording
+      text: 'My team won first place at MRuHacks 2026 with StretchGoals, a desktop posture coach with an AI voice companion. I also won Best Project Built with ElevenLabs with my teammate at the IEEE Southern Alberta Industry Hackathon 2026, and built a peer-to-peer payment app in 24 hours at MRUHacks.',
     },
   ],
   contact: {
