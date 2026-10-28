@@ -1,7 +1,7 @@
 // All page copy outside the featured projects lives here. Facts come from the résumé; prose I drafted
 // from it is marked `// DRAFT` so it can be reviewed (`grep -rn DRAFT src`).
 import type { ImageMetadata } from 'astro';
-import portraitImage from '../assets/portrait.jpg';
+import portraitImage from '../assets/portrait-lake.png';
 import spruceMeadowsPhoto from '../assets/experience/spruce-meadows.jpg';
 import wooferShot from '../assets/more-projects/woofer.jpg';
 import classroomShot from '../assets/more-projects/classroom.jpg';
