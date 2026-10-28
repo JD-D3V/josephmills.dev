@@ -1,10 +1,33 @@
 ---
 import { site } from '../data/site';
 import SectionHeader from './SectionHeader.astro';
+import { Image, getImage } from 'astro:assets';
+import Gallery from './Gallery.astro';
+import raceStride from '../assets/biathlon/race-stride.png';
+import raceRange from '../assets/biathlon/race-range.png';
+import snowCourse from '../assets/biathlon/snow-course.png';
+import type { GalleryItem } from '../scripts/gallery';
+
+const photos = [
+  { src: raceStride, alt: 'Joseph racing in a blue Biathlon Alberta suit on a snowy course' },
+  { src: raceRange, alt: 'Joseph skiing past the biathlon range in an orange race bib' },
+  { src: snowCourse, alt: 'Joseph skiing down a sunlit snow course wearing race bib 22' },
+];
+const galleryItems: GalleryItem[] = await Promise.all(photos.map(async (photo) => {
+  const image = await getImage({ src: photo.src, format: 'webp', width: Math.min(1600, photo.src.width) });
+  return { type: 'image', src: image.src, alt: photo.alt };
+}));
 ---
 
 <section id="beyond" class="section container" aria-labelledby="beyond-title">
   <SectionHeader id="beyond" label="Beyond" title="Away from the keyboard" />
+  <div class="biathlon-photos" aria-label="Biathlon photos">
+    {photos.map((photo, index) => (
+      <button type="button" class="biathlon-photo" data-gallery="biathlon" data-index={index} aria-label={`Open gallery: ${photo.alt}`}>
+        <Image src={photo.src} alt={photo.alt} width={800} widths={[400, 800]} sizes="(min-width: 700px) 440px, calc(100vw - 48px)" format="webp" loading="lazy" />
+      </button>
+    ))}
+  </div>
   <div class="beyond">
     {site.beyond.map((b) => (
       <div class="card">
@@ -13,10 +36,18 @@ import SectionHeader from './SectionHeader.astro';
       </div>
     ))}
   </div>
+  <Gallery projectId="biathlon" title="Biathlon" items={galleryItems} />
 </section>
 
 <style>
   .beyond { display: grid; gap: 20px; grid-template-columns: repeat(auto-fill, minmax(min(280px, 100%), 1fr)); }
   h3 { font-size: 1.125rem; }
   p { margin: 0; }
+  .biathlon-photos { display: grid; grid-template-columns: 1.4fr 0.667fr 1.5fr; align-items: center; gap: 16px; margin-bottom: 24px; }
+  .biathlon-photo { display: block; min-width: 0; padding: 0; border: 0; border-radius: 12px; overflow: hidden; background: transparent; cursor: zoom-in; }
+  .biathlon-photo img { display: block; width: 100%; height: auto; }
+  @media (max-width: 699px) {
+    .biathlon-photos { grid-template-columns: 1fr; }
+    .biathlon-photo:nth-child(2) { width: min(100%, 280px); justify-self: center; }
+  }
 </style>
